@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "little-lemon-final-assessment",
+    "slug": "little-lemon-final-assessment",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  },
+  "name": "little-lemon-final-assessment"
+}
