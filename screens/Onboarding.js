@@ -11,8 +11,8 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export default function Onboarding({ navigation }) {
-  const [name, setName] = useState('Claudio')
-  const [email, setEmail] = useState('clouds83@gmail.com')
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
 
   const storeData = async (name, email) => {
     try {
