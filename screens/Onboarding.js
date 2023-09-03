@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState, useContext, useEffect } from 'react'
 import logo from '../assets/horizontal-logo.png'
 import {
   Pressable,
@@ -8,41 +8,22 @@ import {
   TextInput,
   View,
 } from 'react-native'
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import { AuthContext } from '../contexts/auth'
 
 export default function Onboarding({ navigation }) {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
-
-  const storeData = async (name, email) => {
-    try {
-      await AsyncStorage.setItem('name', name)
-      await AsyncStorage.setItem('email', email)
-      navigation.navigate('Home')
-    } catch (e) {
-      console.log(e)
-    }
-  }
-
-  const getData = async () => {
-    try {
-      const name = await AsyncStorage.getItem('name')
-      const email = await AsyncStorage.getItem('email')
-
-      if (name && email) {
-        navigation.navigate('Home')
-      }
-    } catch (e) {
-      console.log(e)
-    }
-  }
+  const { user, login } = useContext(AuthContext)
 
   useEffect(() => {
-    getData()
+    if (user.email) {
+      navigation.navigate('Home')
+    }
   }, [])
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Image
         source={logo}
         style={{ width: 192, height: 54 }}
@@ -80,11 +61,11 @@ export default function Onboarding({ navigation }) {
 
       <Pressable
         style={styles.buttonContainer}
-        onPress={() => storeData(name, email)}
+        onPress={() => login(name, email)}
         disabled={!name || !email}>
         <Text style={styles.buttonText}>Next</Text>
       </Pressable>
-    </View>
+    </SafeAreaView>
   )
 }
 
@@ -95,7 +76,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 32,
   },
-
   content: {
     flex: 1,
     justifyContent: 'center',

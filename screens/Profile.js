@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useState, useContext, useEffect } from 'react'
+import { AuthContext } from '../contexts/auth'
 import logo from '../assets/horizontal-logo.png'
 import {
   Pressable,
@@ -9,51 +9,20 @@ import {
   TextInput,
   View,
 } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 export default function Profile({ navigation }) {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
-
-  const getData = async () => {
-    try {
-      const name = await AsyncStorage.getItem('name')
-      const email = await AsyncStorage.getItem('email')
-
-      if (name && email) {
-        setName(name)
-        setEmail(email)
-      }
-    } catch (e) {
-      console.log(e)
-    }
-  }
-
-  const updateData = async (name, email) => {
-    try {
-      await AsyncStorage.setItem('name', name)
-      await AsyncStorage.setItem('email', email)
-      navigation.navigate('Home')
-    } catch (e) {
-      console.log(e)
-    }
-  }
-
-  const logout = async () => {
-    try {
-      await AsyncStorage.setItem('name', '')
-      await AsyncStorage.setItem('email', '')
-      navigation.navigate('Onboarding')
-    } catch (e) {
-      console.log(e)
-    }
-  }
+  const { user, login: updateProfile, logout } = useContext(AuthContext)
 
   useEffect(() => {
-    getData()
+    setName(user.name)
+    setEmail(user.email)
   }, [])
 
   return (
-    <View style={{ flex: 1, justifyContent: 'space-between' }}>
+    <SafeAreaView style={{ flex: 1, justifyContent: 'space-between' }}>
       <View style={styles.header}>
         <Pressable
           style={styles.backButton}
@@ -99,7 +68,7 @@ export default function Profile({ navigation }) {
           </Pressable>
           <Pressable
             style={styles.buttonContainer}
-            onPress={() => updateData(name, email)}
+            onPress={() => updateProfile(name, email)}
             disabled={!name || !email}>
             <Text style={styles.buttonText}>Save</Text>
           </Pressable>
@@ -113,7 +82,7 @@ export default function Profile({ navigation }) {
           <Text style={styles.accentButtonText}>Log out</Text>
         </Pressable>
       </View>
-    </View>
+    </SafeAreaView>
   )
 }
 
@@ -128,7 +97,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 24,
     paddingVertical: 12,
-    marginTop: 24,
   },
   backButton: {
     position: 'absolute',

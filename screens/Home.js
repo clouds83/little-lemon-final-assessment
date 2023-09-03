@@ -9,10 +9,51 @@ import {
   View,
   ScrollView,
 } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import { useState } from 'react'
 
 export default function Home({ navigation }) {
+  const items = [
+    {
+      id: 1,
+      category: 'starters',
+      name: 'Hummus',
+      description: 'Creamy dip',
+      price: 6,
+      image: require('../assets/hummus.jpeg'),
+    },
+    {
+      id: 2,
+      category: 'mains',
+      name: 'Kebab',
+      description: 'Grilled meat',
+      price: 12,
+      image: require('../assets/kebab.jpg'),
+    },
+    {
+      id: 3,
+      category: 'desserts',
+      name: 'Baklava',
+      description: 'Sweet pastry',
+      price: 8,
+      image: require('../assets/baklava.jpeg'),
+    },
+    {
+      id: 4,
+      category: 'drinks',
+      name: 'Mint Tea',
+      description: 'Refreshing drink',
+      price: 3,
+      image: require('../assets/mint-tea.jpg'),
+    },
+  ]
+
+  const [filter, setFilter] = useState('all')
+  const filteredItems =
+    filter === 'all' ? items : items.filter((item) => item.category === filter)
+
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.header}>
         <Image source={logo} style={styles.logo} resizeMode='contain'></Image>
         <Pressable
@@ -43,61 +84,71 @@ export default function Home({ navigation }) {
       {/* Menu breakdown */}
       <View style={styles.breakdownContainer}>
         <Text style={styles.breakdownTitle}>Order for delivery!</Text>
-        <ScrollView style={{ paddingLeft: 24 }} horizontal={true}>
-          <Text style={styles.breakdownItem}>Starters</Text>
-          <Text style={styles.breakdownItem}>Mains</Text>
-          <Text style={styles.breakdownItem}>Deserts</Text>
-          <Text style={styles.breakdownItem}>Drinks</Text>
-          <Text style={styles.breakdownItem}>Lipsum</Text>
+        <ScrollView
+          horizontal={true}
+          contentContainerStyle={{
+            gap: 16,
+            paddingHorizontal: 24,
+          }}>
+          <Text
+            style={[
+              styles.breakdownItem,
+              filter == 'all' ? styles.active : null,
+            ]}
+            onPress={() => setFilter('all')}>
+            All
+          </Text>
+          <Text
+            style={[
+              styles.breakdownItem,
+              filter == 'starters' ? styles.active : null,
+            ]}
+            onPress={() => setFilter('starters')}>
+            Starters
+          </Text>
+          <Text
+            style={[
+              styles.breakdownItem,
+              filter == 'mains' ? styles.active : null,
+            ]}
+            onPress={() => setFilter('mains')}>
+            Mains
+          </Text>
+          <Text
+            style={[
+              styles.breakdownItem,
+              filter == 'desserts' ? styles.active : null,
+            ]}
+            onPress={() => setFilter('desserts')}>
+            Desserts
+          </Text>
+          <Text
+            style={[
+              styles.breakdownItem,
+              filter == 'drinks' ? styles.active : null,
+            ]}
+            onPress={() => setFilter('drinks')}>
+            Drinks
+          </Text>
         </ScrollView>
       </View>
 
       {/* Menu items */}
       <ScrollView style={{ flexGrow: 1 }}>
         <View style={{ padding: 24, paddingBottom: 0 }}>
-          <View style={{ flexDirection: 'row' }}>
-            <View style={{ flexGrow: 1, marginBottom: 24 }}>
-              <Text style={styles.itemTitle}>Item name</Text>
-              <Text style={{ fontSize: 16 }}>Description of this item</Text>
-              <Text style={styles.itemPrice}>$10</Text>
+          {filteredItems.map((item) => (
+            <View key={item.id} style={{ flexDirection: 'row' }}>
+              <View style={{ flexGrow: 1, marginBottom: 24 }}>
+                <Text style={styles.itemTitle}>{item.name}</Text>
+                <Text style={{ fontSize: 16 }}>{item.description}</Text>
+                <Text style={styles.itemPrice}>${item.price}</Text>
+              </View>
+              <Image source={item.image} style={styles.itemImage} />
             </View>
-            <Image source={heroImage} style={styles.itemImage} />
-          </View>
-          <View style={{ flexDirection: 'row' }}>
-            <View style={{ flexGrow: 1, marginBottom: 24 }}>
-              <Text style={styles.itemTitle}>Item name</Text>
-              <Text style={{ fontSize: 16 }}>Description of this item</Text>
-              <Text style={styles.itemPrice}>$10</Text>
-            </View>
-            <Image source={heroImage} style={styles.itemImage} />
-          </View>
-          <View style={{ flexDirection: 'row' }}>
-            <View style={{ flexGrow: 1, marginBottom: 24 }}>
-              <Text style={styles.itemTitle}>Item name</Text>
-              <Text style={{ fontSize: 16 }}>Description of this item</Text>
-              <Text style={styles.itemPrice}>$10</Text>
-            </View>
-            <Image source={heroImage} style={styles.itemImage} />
-          </View>
-          <View style={{ flexDirection: 'row' }}>
-            <View style={{ flexGrow: 1, marginBottom: 24 }}>
-              <Text style={styles.itemTitle}>Item name</Text>
-              <Text style={{ fontSize: 16 }}>Description of this item</Text>
-              <Text style={styles.itemPrice}>$10</Text>
-            </View>
-            <Image source={heroImage} style={styles.itemImage} />
-          </View>
-          <View style={{ flexDirection: 'row' }}>
-            <View style={{ flexGrow: 1, marginBottom: 24 }}>
-              <Text style={styles.itemTitle}>Item name</Text>
-              <Text style={{ fontSize: 16 }}>Description of this item</Text>
-              <Text style={styles.itemPrice}>$10</Text>
-            </View>
-            <Image source={heroImage} style={styles.itemImage} />
-          </View>
+          ))}
         </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   )
 }
 
@@ -112,7 +163,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 24,
     paddingVertical: 12,
-    marginTop: 24,
   },
   profileButton: {
     position: 'absolute',
@@ -170,7 +220,10 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 8,
     fontWeight: 'bold',
-    marginRight: 24,
+  },
+  active: {
+    backgroundColor: '#4d5d57',
+    color: 'white',
   },
   itemImage: {
     width: 80,
