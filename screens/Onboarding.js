@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from 'react'
+import { useState, useContext } from 'react'
 import logo from '../assets/horizontal-logo.png'
 import {
   Pressable,
@@ -14,13 +14,7 @@ import { AuthContext } from '../contexts/auth'
 export default function Onboarding({ navigation }) {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
-  const { user, login } = useContext(AuthContext)
-
-  useEffect(() => {
-    if (user.email) {
-      navigation.navigate('Home')
-    }
-  }, [])
+  const { login } = useContext(AuthContext)
 
   return (
     <SafeAreaView style={styles.container}>
